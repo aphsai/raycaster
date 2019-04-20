@@ -10,3 +10,13 @@ Here's what it looks like:
 
 ![Picture 1](img/picture_1.png?raw=true "Picture 1")
 ![Picture 2](img/picture_2.png?raw=true "Picture 2")
+
+
+## TODO (in no particular order)
+* [ ] Add explanation to README
+* [ ] Add texture loading
+* [ ] Clean code and segment
+* [ ] Add minimap to show 2D representation
+* [ ] Shading 
+* [ ] Load maps from text file
+* [ ] Multiple lightsources
