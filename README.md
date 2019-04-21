@@ -17,6 +17,6 @@ Here's what it looks like:
 * [ ] Add texture loading
 * [ ] Clean code and segment
 * [ ] Add minimap to show 2D representation
-* [ ] Shading 
+* [x] Shading (I realized I don't need light sources? It's a 2D map so I can just calculate the depth)
 * [ ] Load maps from text file
 * [ ] Multiple lightsources
