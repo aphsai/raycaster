@@ -20,42 +20,14 @@ int map_height;
 
 const double MOVESPEED = 0.1; 
 const double ROTATIONSPEED = 0.0872 * 2 / 5.0; // ~2.5 Degree
+const double LIGHTINTENSITY = 0.8;
 
 Vector2D position(22, 12);
 Vector2D direction(-1, 0);
-Vector2D cameraPlane(0, 0.66);
+Vector2D cameraPlane(0, 1);
 
 bool move_forwards = false, move_backwards = false, rotate_left = false, rotate_right = false;
-
 std::vector<std::vector<int>> map;
-//Default map
-//	std::vector<std::vector<int>> map =
-//	{
-//	  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-//	  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
-//	  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,2,2,2,0,0,0,1},
-//	  {1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//	  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-//	};
 
 void loadMap(const char* s) {
 	std::fstream fin (s);
@@ -90,8 +62,8 @@ void draw() {
 		Vector2D mapPosition { int(rayPosition.x), int(rayPosition.y) };
 		
 		//Calculates distance to next y tile and next x tile
-		double deltaDistanceY = sqrt(1 + (rayDirection.x * rayDirection.x) / (rayDirection.y * rayDirection.y));
-		double deltaDistanceX = sqrt(1 + (rayDirection.y * rayDirection.y) / (rayDirection.x * rayDirection.x));
+		double deltaY = sqrt(1 + (rayDirection.x * rayDirection.x) / (rayDirection.y * rayDirection.y));
+		double deltaX = sqrt(1 + (rayDirection.y * rayDirection.y) / (rayDirection.x * rayDirection.x));
 
 		double nextSideDistanceX;
 		double nextSideDistanceY;
@@ -100,53 +72,62 @@ void draw() {
 
 		if (rayDirection.x < 0) {
 			stepDirection.x = -1;
-			nextSideDistanceX = (rayPosition.x - mapPosition.x) * deltaDistanceX;
+			nextSideDistanceX = (rayPosition.x - mapPosition.x) * deltaX;
 		} else {
 			stepDirection.x = 1;
-			nextSideDistanceX = (mapPosition.x - rayPosition.x + 1) * deltaDistanceX;
+			nextSideDistanceX = (mapPosition.x - rayPosition.x + 1) * deltaX;
 		}
 		if (rayDirection.y < 0) {
 			stepDirection.y = -1;
-			nextSideDistanceY = (rayPosition.y - mapPosition.y) * deltaDistanceY;
+			nextSideDistanceY = (rayPosition.y - mapPosition.y) * deltaY;
 		} else {
 			stepDirection.y = 1;
-			nextSideDistanceY = (mapPosition.y - rayPosition.y + 1) * deltaDistanceY;
+			nextSideDistanceY = (mapPosition.y - rayPosition.y + 1) * deltaY;
 		}
 
 		int side = 0;
 		while(true) {
 			if (nextSideDistanceX < nextSideDistanceY) {
-				nextSideDistanceX = nextSideDistanceX + deltaDistanceX;
+				nextSideDistanceX = nextSideDistanceX + deltaX;
 				mapPosition.x = mapPosition.x + stepDirection.x;
 				side = 0;
 			} else {
-				nextSideDistanceY = nextSideDistanceY + deltaDistanceY;
+				nextSideDistanceY = nextSideDistanceY + deltaY;
 				mapPosition.y = mapPosition.y + stepDirection.y;
 				side = 1;
 			}
 			//Check if ray hit wall
 			if (getMapTile(mapPosition.x, mapPosition.y) > 0) break;
 		}
+		
+		//Calculating light intensity
+		Vector2D light_direction = (position - Vector2D { nextSideDistanceX, nextSideDistanceY }).normalize();
+		Vector2D intersection_normal = (side == 0) ? Vector2D { 1, 0 } : Vector2D { 0, 1 };
+		double light_intensity = (Vector2D { nextSideDistanceX - position.x, nextSideDistanceY - position.y }).magnitude() * LIGHTINTENSITY;
+
+
 		double perpendicularWallDistance;
 		if (side == 0) perpendicularWallDistance = (mapPosition.x - rayPosition.x + (1 - stepDirection.x) / 2 ) / rayDirection.x;
 		else perpendicularWallDistance = (mapPosition.y - rayPosition.y + (1 - stepDirection.y) / 2 ) / rayDirection.y;
-
+		
 		perpendicularWallDistance = abs(perpendicularWallDistance);
-
+	
 		int lineHeight = (int) (SCREEN_HEIGHT / perpendicularWallDistance);
-		double linePercent = double(lineHeight) / double(SCREEN_HEIGHT);
+		double linePercent = fmin(double(lineHeight) / double(SCREEN_HEIGHT), 1);
+		int color = 255 * linePercent / (side + 1);
+
 		switch (getMapTile(mapPosition.x, mapPosition.y)) {
 			case 1: 
-				SDL_SetRenderDrawColor(renderer, 255 / (side + 1), 0, 0, 255);
+				SDL_SetRenderDrawColor(renderer, color, 0, 0, 255);
 				break;
 			case 2:
-				SDL_SetRenderDrawColor(renderer, 0, 255 / (side + 1), 0, 255);
+				SDL_SetRenderDrawColor(renderer, 0, color, 0, 255);
 				break;
 			case 3:
-				SDL_SetRenderDrawColor(renderer, 0, 0, 255 / (side + 1), 255);
+				SDL_SetRenderDrawColor(renderer, 0, 0, color, 255);
 				break;
 			default:
-				SDL_SetRenderDrawColor(renderer, 255 / (side + 1), 0, 255 / (side + 1), 255);
+				SDL_SetRenderDrawColor(renderer, color, 0, color, 255);
 				break;
 		}
 
@@ -227,6 +208,9 @@ void handleInput(SDL_Event &e) {
 int main(int argc, char* argv[]) {
 	if (argc > 1) {
 		loadMap(argv[1]);
+	} else {
+		std::cout << "Please include a map file. ./ray.out [map]" << std::endl;
+		return 1;
 	}
 	window = SDL_CreateWindow("Raytracer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
