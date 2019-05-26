@@ -1,6 +1,6 @@
-# raytracer
+# raycaster
 
-A simple c++ raytracer (DOOM/Wolfenstein) style
+A simple c++ raycaster (DOOM/Wolfenstein) style
 
 I still need to clean up the code a bit, but the map generation and raycasting all works. 
 I also kind of wanted to add textures and maybe the ability to make your own lightsources but this all comes after code cleanup :)
